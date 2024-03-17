@@ -1,6 +1,8 @@
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tax {
 
@@ -9,6 +11,7 @@ public class Tax {
          System.out.println(taxCounter(costsArray()));
     }
 
+    //calculate costs taxes from array and show it in console
     private static String taxCounter(double[] costsArray) {
 
         double[] taxesArray = new double[costsArray.length];
@@ -28,14 +31,15 @@ public class Tax {
         }
 
         return Arrays.toString(taxesArray);
-    }//calculate costs taxes from array and show it in console
+    }
+
+    //create an array with costs
     private static double[] costsArray() {
         Scanner reader = new Scanner(System.in);
         String s = null;
-
         int costsCount;
-        System.out.print("Please enter the count of costs: ");
 
+        System.out.print("Please enter the count of costs: ");
         while(true) {
             if(reader.hasNextInt()) {
                 costsCount = reader.nextInt();
@@ -48,7 +52,6 @@ public class Tax {
 
         double[] costs = new double[costsCount];
 
-
         for(int i = 0; i < costs.length; i++) {
 
             if(i == 0) {
@@ -58,13 +61,27 @@ public class Tax {
             }
             s = reader.next();
             if(!Objects.equals(s, "exit")) {
-                double cost = Double.parseDouble(s);
-                costs[i] = cost;
+                while(true) {
+                    if(checkingCosts(s) && Double.parseDouble(s) <= 10000.0) {
+                        double cost = Double.parseDouble(s);
+                        costs[i] = cost;
+                        break;
+                    } else {
+                        System.out.print("Please enter the right number less than 11000 and with cents, for example like this 25.40, 9.00 etc : ");
+                        s = reader.next();
+                    }
+                }
             } else {
                 break;
             }
         }
 
         return costs;
-    }//create an array with costs
+    }
+
+    public static boolean checkingCosts(String cost) {
+        Pattern pattern = Pattern.compile("[1-9]+[.,]*[0-9]*");
+        Matcher matcher = pattern.matcher(cost);
+        return matcher.matches();
+    }
 }
